@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -17,10 +18,12 @@ export default function SiteHeader() {
   return (
     <header className="border-b border-ink/10">
       <nav className="wrap flex items-center justify-between py-4" aria-label="Main">
-        <Link href="/" className="font-display text-lg leading-none tracking-[0.2em] uppercase">
-          HA
-          <span className="mt-1 block font-mono text-[10px] tracking-[0.3em] text-muted">
-            Historical Archive
+        <Link href="/" className="flex items-center gap-3" aria-label="Historical Archive — home">
+          <Image src="/logo.png" alt="" width={96} height={96} className="h-10 w-10" priority />
+          <span className="font-mono text-[10px] leading-relaxed tracking-[0.3em] text-muted uppercase">
+            Historical
+            <br />
+            Archive
           </span>
         </Link>
         <ul className="hidden items-center gap-8 md:flex">

@@ -16,6 +16,10 @@ export const metadata: Metadata = {
     template: "%s — Historical Archive",
   },
   description: "Stories that shaped the world. A digital museum of wars, people, empires, and oddities.",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
