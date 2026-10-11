@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* ponytail: class-based dark (single .dark remap, no per-component overrides) — switch to media strategy if the toggle ever goes away. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-paper: #f3f0e8;
   --color-paper-deep: #e8e3d8;
@@ -12,6 +15,17 @@
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* ponytail: full token inversion — ink bands become paper bands in the dark, so contrast holds with zero extra classes. */
+.dark {
+  --color-paper: #171717;
+  --color-paper-deep: #221f1a;
+  --color-ink: #f3f0e8;
+  --color-ink-deep: #100f0e;
+  --color-secondary: #b7b0a4;
+  --color-muted: #9c958a;
+  --color-accent: #c4705f;
 }
 
 /* ponytail: single .wrap utility instead of a Container component — split if variants needed. */
@@ -63,6 +77,10 @@ body {
 /* Archival map treatment: muted tiles + oxblood markers + paper popups. */
 .archive-map .maplibregl-canvas {
   filter: sepia(0.28) saturate(0.65);
+}
+
+.dark .archive-map .maplibregl-canvas {
+  filter: sepia(0.28) saturate(0.65) brightness(0.82);
 }
 
 /* MapLibre controls ship at ~29px — upscale to touch-target size. */
