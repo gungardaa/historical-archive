@@ -16,7 +16,7 @@ export const CATEGORIES: CategoryMeta[] = [
     numeral: "I",
     note: "Conflicts that redrew maps",
     intro:
-      "Prolonged conflicts between states and peoples — the great ruptures that ended empires and drew the borders we live with.",
+      "Prolonged conflicts between states and peoples. The great ruptures that ended empires and drew the borders we live with.",
   },
   {
     slug: "battles",
@@ -24,7 +24,7 @@ export const CATEGORIES: CategoryMeta[] = [
     numeral: "II",
     note: "Single days that decided eras",
     intro:
-      "Compressed violence: one field, one day, one decision. Each of these engagements bent the longer war around it.",
+      "Compressed violence in which a single field, a single day and a single decision bent the longer war around it.",
   },
   {
     slug: "empires",
@@ -32,7 +32,7 @@ export const CATEGORIES: CategoryMeta[] = [
     numeral: "III",
     note: "Civilizations at their height",
     intro:
-      "The large orders — how they rose, what held them together, and what their collapse left behind.",
+      "The large orders. How they rose, what held them together and what their collapse left behind.",
   },
   {
     slug: "people",
@@ -40,7 +40,7 @@ export const CATEGORIES: CategoryMeta[] = [
     numeral: "IV",
     note: "Lives that bent history",
     intro:
-      "Individuals whose choices scaled up: generals, rulers, and voices that carried further than their own lifetimes.",
+      "Individuals whose choices scaled up beyond their own lifetimes, from generals and rulers to voices that carried further still.",
   },
   {
     slug: "technology",
@@ -48,7 +48,7 @@ export const CATEGORIES: CategoryMeta[] = [
     numeral: "V",
     note: "Machines and material craft",
     intro:
-      "Instruments of power and knowledge — from concrete that heals in seawater to machines that ended the battleship age.",
+      "Instruments of power and knowledge, from concrete that heals in seawater to machines that ended the battleship age.",
   },
   {
     slug: "oddities",
@@ -56,7 +56,7 @@ export const CATEGORIES: CategoryMeta[] = [
     numeral: "VI",
     note: "Strange but documented events",
     intro:
-      "The archive's cabinet of curiosities: mysteries, impossible missions, and events that read like fiction but happened.",
+      "The archive's cabinet of curiosities holds mysteries, impossible missions and events that read like fiction but happened.",
   },
 ];
 

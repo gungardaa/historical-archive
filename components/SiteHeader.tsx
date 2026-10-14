@@ -12,9 +12,12 @@ const LIVE = [
   { label: "About", href: "/about" },
 ];
 
-// ponytail: localStorage + class toggle, no theme lib — next-themes if the toggle ever leaves the navbar.
+// ponytail: cookie is the source of truth (server renders it), class toggle + localStorage
+// stay for instant feedback — next-themes if the toggle ever leaves the navbar.
 function ThemeToggle() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(
+    () => typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+  );
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time sync with the pre-paint theme script; no render loop.
     setDark(document.documentElement.classList.contains("dark"));
@@ -23,6 +26,7 @@ function ThemeToggle() {
     const next = !dark;
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
+    document.cookie = `archive-theme=${next ? "dark" : "light"}; path=/; max-age=31536000`;
     try {
       localStorage.setItem("archive-theme", next ? "dark" : "light");
     } catch {
@@ -53,7 +57,7 @@ function ThemeToggle() {
 
 export default function SiteHeader() {
   const [open, setOpen] = useState(false);  return (
-    <header className="border-b border-ink/10">
+    <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper">
       <nav className="wrap flex items-center justify-between py-4" aria-label="Main">
         <Link href="/" className="flex items-center gap-3" aria-label="Historical Archive — home">
           <Image src="/logo.png" alt="" width={96} height={96} className="h-10 w-10" priority />

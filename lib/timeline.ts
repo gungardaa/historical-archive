@@ -27,16 +27,3 @@ export function groupByYear(entries: HistoricalEntry[]): YearGroup[] {
   }
   return groups;
 }
-
-// Eras adapted to the collection span (3100 BC – 1975).
-export const ERAS: Array<{ label: string; year: number }> = [
-  { label: "3100 BC", year: -3100 },
-  { label: "500 BC", year: -500 },
-  { label: "0", year: 0 },
-  { label: "500", year: 500 },
-  { label: "1000", year: 1000 },
-  { label: "1500", year: 1500 },
-  { label: "1800", year: 1800 },
-  { label: "1900", year: 1900 },
-  { label: "1950", year: 1950 },
-];

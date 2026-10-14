@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import type { HistoricalEntry } from "@/types/archive";
 
-// ponytail: route-split maplibre (~1MB) off the shared bundle — static import if the map ever needs SSR.
+// ponytail: route-split leaflet off the shared bundle — static import if the map ever needs SSR.
 const ArchiveMap = dynamic(() => import("@/components/ArchiveMap"), {
   ssr: false,
   loading: () => (

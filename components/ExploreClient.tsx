@@ -37,6 +37,9 @@ export default function ExploreClient({ entries }: { entries: HistoricalEntry[] 
   // Draft initializes from the URL once; Clear/Esc reset it explicitly. Browser back/forward
   // while focused is the known edge — results always follow the URL, the text refreshes on next keystroke.
   const [draft, setDraft] = useState(params.get("q") ?? "");
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortBtn = useRef<HTMLButtonElement>(null);
+  const sortBox = useRef<HTMLDivElement>(null);
 
   const q = (params.get("q") ?? "").toLowerCase();
   const rawCat = params.get("cat") ?? "all";
@@ -66,6 +69,36 @@ export default function ExploreClient({ entries }: { entries: HistoricalEntry[] 
   }
 
   useEffect(() => () => clearTimeout(keyTimer.current), []);
+
+  // ponytail: button-per-option listbox, not roving-tabindex radios — arrow keys move focus,
+  // Enter/Space come free with buttons; full APG grid if screen-reader users ask for more.
+  useEffect(() => {
+    if (!sortOpen) return;
+    function onDown(ev: PointerEvent) {
+      if (!sortBox.current?.contains(ev.target as Node)) {
+        setSortOpen(false);
+        sortBtn.current?.focus();
+      }
+    }
+    function onKey(ev: KeyboardEvent) {
+      if (ev.key === "Escape") {
+        setSortOpen(false);
+        sortBtn.current?.focus();
+      }
+    }
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [sortOpen]);
+
+  function moveOption(idx: number, dir: 1 | -1) {
+    const items = [...(sortBox.current?.querySelectorAll('[role="option"] > button') ?? [])] as HTMLElement[];
+    const next = items[idx + dir];
+    (next ?? sortBtn.current)?.focus();
+  }
 
   // ponytail: "/" focuses, Esc clears query only (category/sort kept) — full result-list nav if keyboard users ask for it.
   useEffect(() => {
@@ -110,11 +143,17 @@ export default function ExploreClient({ entries }: { entries: HistoricalEntry[] 
   }, [q, cat, sort, entries]);
 
   const isBrowsing = !q && cat === "all" && sort === "relevance";
+  // ponytail: hand-picked shelf, not an algorithm — rotate the slugs when it goes stale.
+  const FEATURED = ["battle-of-midway", "siege-of-constantinople", "world-war-ii", "september-11-attacks"];
+  const shelf = FEATURED.map((slug) => entries.find((e) => e.slug === slug)).filter(
+    (e): e is HistoricalEntry => e !== undefined
+  );
+  const shelfSlugs = new Set(shelf.map((e) => e.slug));
 
   return (
     <div>
       <h1 className="sr-only">Explore the archive</h1>
-      <SectionHeading eyebrow="Catalogue — 35 records" title="Explore the archive" />
+      <SectionHeading eyebrow={`Catalogue — ${entries.length} records`} title="Explore the archive" />
 
       <div className="mt-10">
         <label htmlFor="archive-search" className="font-mono text-xs tracking-[0.2em] text-muted uppercase">
@@ -156,22 +195,53 @@ export default function ExploreClient({ entries }: { entries: HistoricalEntry[] 
         <p role="status" className="font-mono text-xs tracking-[0.2em] text-muted uppercase">
           {q ? `"${params.get("q")}" — ${results.length} found` : `${results.length} archived stories`}
         </p>
-        <div>
-          <label htmlFor="archive-sort" className="font-mono text-xs tracking-[0.2em] text-muted uppercase">
+        <div ref={sortBox} className="relative">
+          <span id="archive-sort-label" className="font-mono text-xs tracking-[0.2em] text-muted uppercase">
             Sort
-          </label>
-          <select
-            id="archive-sort"
-            value={sort}
-            onChange={(ev) => set({ q: params.get("q") ?? "", cat: cat === "all" ? "" : cat, sort: ev.target.value })}
-            className="ml-3 border border-ink/25 bg-transparent px-3 py-2 text-sm"
+          </span>
+          <button
+            ref={sortBtn}
+            type="button"
+            id="archive-sort-button"
+            aria-haspopup="listbox"
+            aria-expanded={sortOpen}
+            aria-labelledby="archive-sort-label archive-sort-button"
+            onClick={() => setSortOpen(!sortOpen)}
+            className="ml-3 min-h-[44px] border border-ink/25 bg-transparent px-3 py-2 text-left text-sm"
           >
-            {SORTS.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
+            {SORTS.find((s) => s.value === sort)?.label}
+            <span aria-hidden="true" className="ml-2 text-muted">{sortOpen ? "▴" : "▾"}</span>
+          </button>
+          {sortOpen && (
+            <ul role="listbox" aria-labelledby="archive-sort-label" className="absolute right-0 z-30 mt-2 min-w-44 border border-ink/15 bg-paper py-1">
+              {SORTS.map((s, idx) => (
+                <li key={s.value} role="option" aria-selected={sort === s.value}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      set({ q: params.get("q") ?? "", cat: cat === "all" ? "" : cat, sort: s.value });
+                      setSortOpen(false);
+                      sortBtn.current?.focus();
+                    }}
+                    onKeyDown={(ev) => {
+                      if (ev.key === "ArrowDown") {
+                        ev.preventDefault();
+                        moveOption(idx, 1);
+                      } else if (ev.key === "ArrowUp") {
+                        ev.preventDefault();
+                        moveOption(idx, -1);
+                      }
+                    }}
+                    className={`block w-full px-4 py-2.5 text-left text-sm transition-colors hover:bg-ink/5 hover:text-accent ${
+                      sort === s.value ? "font-medium text-accent" : "text-ink"
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 
@@ -195,12 +265,12 @@ export default function ExploreClient({ entries }: { entries: HistoricalEntry[] 
         /* ponytail: mixed rhythm only for the unfiltered shelf — filtered/searching stays scannable compact. */
         <div className="mt-10 space-y-10">
           <div>
-            {results.slice(0, 4).map((entry) => (
+            {shelf.map((entry) => (
               <EntryCard key={entry.id} entry={entry} variant="editorial" />
             ))}
           </div>
           <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {results.slice(4).map((entry) => (
+            {results.filter((entry) => !shelfSlugs.has(entry.slug)).map((entry) => (
               <li key={entry.id}>
                 <EntryCard entry={entry} variant="compact" />
               </li>

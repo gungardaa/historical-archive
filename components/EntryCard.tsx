@@ -33,7 +33,7 @@ export default function EntryCard({
 
   if (variant === "compact") {
     return (
-      <Link href={href} className="group flex gap-4 border border-ink/10 bg-paper p-3">
+      <Link href={href} className="group flex h-full gap-4 border border-ink/10 bg-paper p-3">
         <div className="w-20 shrink-0">
           <ArchiveImage src={entry.heroImage} alt={`${entry.title} — archival plate`} ratio="card" />
         </div>
@@ -66,7 +66,7 @@ export default function EntryCard({
   }
 
   return (
-    <Link href={href} className="block">
+    <Link href={href} className="block h-full">
       <article className="group h-full border border-ink/10 bg-paper transition-colors hover:border-accent/40">
         <div className="transition-transform duration-300 group-hover:scale-[1.02]">
           <ArchiveImage src={entry.heroImage} alt={`${entry.title} — archival plate`} ratio="card" />

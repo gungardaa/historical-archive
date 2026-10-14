@@ -1,17 +1,25 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { displayYear } from "@/lib/displayYear";
-import { ERAS, groupByYear } from "@/lib/timeline";
+import { groupByYear } from "@/lib/timeline";
 import type { HistoricalEntry } from "@/types/archive";
+
+function yearLabel(year: number): string {
+  return year < 0 ? `${Math.abs(year)} BC` : String(year);
+}
 
 export default function TimelineBoard({ entries }: { entries: HistoricalEntry[] }) {
   const track = useRef<HTMLDivElement>(null);
   const groups = useMemo(() => groupByYear(entries), [entries]);
+  const min = groups[0]?.year ?? 0;
+  const max = groups[groups.length - 1]?.year ?? 0;
+  const [pos, setPos] = useState(min);
+  // ponytail: linear nearest-group scan (≤35 groups) — binary search if the collection ever scales.
+  const nearest = groups.reduce((a, b) => (Math.abs(b.year - pos) < Math.abs(a.year - pos) ? b : a), groups[0]);
 
-  function jumpTo(year: number) {
-    const el = track.current?.querySelector(`[data-year="${year}"]`);
+  function jumpTo(year: number) {    const el = track.current?.querySelector(`[data-year="${year}"]`);
     if (el) {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", inline: "center", block: "nearest" });
@@ -23,19 +31,88 @@ export default function TimelineBoard({ entries }: { entries: HistoricalEntry[] 
     track.current?.querySelector(`[data-year="${nearest}"]`)?.scrollIntoView({ inline: "center", block: "nearest" });
   }
 
+  // ponytail: scroll writes state only, never scrolls back — the loop is impossible by
+  // construction; jumpTo stays the sole scroller. Linear scans, rAF-throttle past ~200 groups.
+  function syncFromRail() {
+    const t = track.current;
+    if (!t) return;
+    const center = t.scrollLeft + t.clientWidth / 2;
+    let best = groups[0];
+    let bestDist = Infinity;
+    for (const node of t.querySelectorAll("[data-year]")) {
+      const section = node as HTMLElement;
+      const year = Number(section.dataset.year);
+      const dist = Math.abs(section.offsetLeft + section.offsetWidth / 2 - center);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = groups.find((g) => g.year === year) ?? best;
+      }
+    }
+    if (best) setPos(best.year);
+  }
+
+  useEffect(() => {
+    function onWindowScroll() {
+      const t = track.current;
+      if (!t || window.innerWidth >= 768) return;
+      const middle = window.innerHeight / 2;
+      let best: number | null = null;
+      let bestDist = Infinity;
+      for (const node of t.querySelectorAll("[data-year]")) {
+        const r = (node as HTMLElement).getBoundingClientRect();
+        const dist = r.top <= middle && middle <= r.bottom ? 0 : Math.min(Math.abs(r.top - middle), Math.abs(r.bottom - middle));
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = Number((node as HTMLElement).dataset.year);
+        }
+      }
+      if (best !== null) setPos(best);
+    }
+    window.addEventListener("scroll", onWindowScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onWindowScroll);
+  }, []);
+
   return (
     <div>
-      <div className="mt-10 flex flex-wrap gap-2" role="group" aria-label="Jump to era">
-        {ERAS.map((era) => (
-          <button
-            key={era.label}
-            type="button"
-            onClick={() => jumpTo(era.year)}
-            className="min-h-[44px] border border-ink/25 px-4 py-2 font-mono text-sm transition-colors hover:border-accent hover:text-accent"
+      <div className="mt-8 border-y border-ink/10 py-6">
+        <p className="max-w-xs text-sm text-secondary">
+          Nearest record — {nearest ? nearest.entries[0].title : "—"}
+        </p>
+        <label htmlFor="timeline-scrub" className="mt-4 block font-mono text-xs tracking-[0.2em] text-muted uppercase">
+          Scrub through time
+        </label>
+        {/* ponytail: percent-positioned badge, no thumb measuring — clamp 4–96% so it never overflows the rail ends. */}
+        <div className="relative mt-16">
+          <div
+            aria-hidden="true"
+            style={{ left: `${Math.min(96, Math.max(4, ((pos - min) / Math.max(1, max - min)) * 100))}%` }}
+            className="absolute -top-14 -translate-x-1/2"
           >
-            {era.label}
-          </button>
-        ))}
+            <p className="border border-ink/20 bg-paper px-3 py-1.5 font-mono text-sm tracking-[0.15em] whitespace-nowrap">
+              {yearLabel(pos)}
+            </p>
+            <span aria-hidden="true" className="-mt-[7px] mx-auto block h-2.5 w-2.5 rotate-45 border-r border-b border-ink/20 bg-paper" />
+          </div>
+          <input
+            id="timeline-scrub"
+            type="range"
+            min={min}
+            max={max}
+            step={1}
+            value={pos}
+            aria-valuetext={yearLabel(pos)}
+            onChange={(ev) => {
+              const y = Number(ev.target.value);
+              setPos(y);
+              jumpTo(y);
+            }}
+            className="w-full accent-accent"
+          />
+        </div>
+        <div className="flex justify-between font-mono text-xs text-muted" aria-hidden="true">
+          <span>{yearLabel(min)}</span>
+          <span>{yearLabel(max)}</span>
+        </div>
       </div>
 
       <div
@@ -43,7 +120,8 @@ export default function TimelineBoard({ entries }: { entries: HistoricalEntry[] 
         role="list"
         aria-label="Chronological archive. Use arrow keys to scroll on desktop."
         tabIndex={0}
-        className="mt-12 flex flex-col gap-10 md:snap-x md:snap-mandatory md:flex-row md:gap-10 md:overflow-x-auto md:pb-6"
+        onScroll={syncFromRail}
+        className="timeline-rail mt-8 flex flex-col gap-10 md:snap-x md:snap-mandatory md:flex-row md:gap-10 md:overflow-x-auto md:pb-3"
       >
         {groups.map((g) => (
           <section

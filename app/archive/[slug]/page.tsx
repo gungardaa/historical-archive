@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: entry.title,
     description: entry.shortDescription,
     openGraph: {
-      title: `${entry.title} — Historical Archive`,
+      title: `${entry.title} - Historical Archive`,
       description: entry.shortDescription,
       type: "article",
       images: [`/archive/${entry.slug}/opengraph-image`],
@@ -170,7 +170,7 @@ export default async function EntryPage({ params }: { params: Promise<{ slug: st
       {entry.keyFigures && entry.keyFigures.length > 0 && (
         <section className="wrap py-16">
           <SectionHeading eyebrow="Dramatis personae" title="Key figures" />
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {entry.keyFigures.map((f) => (
               <KeyFigureCard key={f.name} figure={f} />
             ))}
@@ -222,6 +222,42 @@ export default async function EntryPage({ params }: { params: Promise<{ slug: st
         <section className="wrap py-16">
           <SectionHeading eyebrow="Echoes" title="Legacy" />
           <p className="mt-6 max-w-3xl text-lg leading-relaxed">{entry.legacy}</p>
+        </section>
+      )}
+
+      {/* Sources */}
+      {entry.sources && entry.sources.length > 0 && (
+        <section className="wrap pb-16">
+          <SectionHeading eyebrow="Selected references" title="Find out more" />
+          <ul className="mt-6 max-w-3xl divide-y divide-ink/10 border-y border-ink/10">
+            {entry.sources.map((s) => (
+              <li key={s.url ?? s.title}>
+                <a
+                  href={s.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group grid grid-cols-[2.5rem_1fr] gap-3 py-4"
+                >
+                  <span aria-hidden="true" className="text-accent transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  <span>
+                    {s.publisher && (
+                      <span className="block font-mono text-xs tracking-[0.2em] text-accent uppercase">
+                        {s.publisher}
+                      </span>
+                    )}
+                    <span className="font-display mt-1 block text-2xl leading-snug transition-colors group-hover:text-accent">
+                      {s.title}
+                    </span>
+                    {s.url && (
+                      <span className="mt-1 block truncate font-mono text-xs text-muted">
+                        {new URL(s.url).hostname.replace(/^www\./, "")} ↗
+                      </span>
+                    )}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 

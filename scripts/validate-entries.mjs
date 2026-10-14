@@ -51,6 +51,12 @@ for (const e of entries) {
   for (const k of e.keyFigures ?? []) {
     if (k.entrySlug && !slugs.has(k.entrySlug)) errors.push(`${e.slug}: dangling keyFigure → ${k.entrySlug}`);
   }
+  if (!Array.isArray(e.sources) || e.sources.length < 1 || e.sources.length > 3)
+    errors.push(`${e.slug}: sources must list 1-3 references`);
+  for (const s of e.sources ?? []) {
+    if (!s.title || !s.title.trim() || !s.url || !/^https?:\/\//.test(s.url))
+      errors.push(`${e.slug}: source needs a title and an http(s) url`);
+  }
 }
 
 if (errors.length) {

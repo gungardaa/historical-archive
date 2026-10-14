@@ -34,6 +34,9 @@ export interface Source {
   title: string;
   url?: string;
   publisher?: string;
+  author?: string;
+  date?: string;
+  accessedAt?: string;
 }
 
 export interface HistoricalEntry {

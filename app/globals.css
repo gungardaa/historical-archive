@@ -38,6 +38,24 @@
 
 html {
   scroll-behavior: smooth;
+  color-scheme: light;
+  scrollbar-color: var(--color-muted) transparent;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* ponytail: explicit option colors — native popups ignore inherited context and wash out
+   in dark mode; tokens invert automatically. Per-option classes if selects ever diverge. */
+option {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+/* ponytail: thin native scrollbar on the timeline rail only — global webkit styling if more rails need it. */
+.timeline-rail {
+  scrollbar-width: thin;
 }
 
 body {
@@ -75,22 +93,48 @@ body {
 }
 
 /* Archival map treatment: muted tiles + oxblood markers + paper popups. */
-.archive-map .maplibregl-canvas {
+.archive-map .leaflet-container {
+  background: var(--color-paper-deep);
+  font: inherit;
+}
+
+.archive-map .leaflet-tile-pane {
   filter: sepia(0.28) saturate(0.65);
 }
 
-.dark .archive-map .maplibregl-canvas {
+.dark .archive-map .leaflet-tile-pane {
   filter: sepia(0.28) saturate(0.65) brightness(0.82);
 }
 
-/* MapLibre controls ship at ~29px — upscale to touch-target size. */
-.archive-map .maplibregl-ctrl-group button {
+/* Leaflet controls ship small — upscale to touch-target size. */
+.archive-map .leaflet-bar a {
   width: 44px;
   height: 44px;
+  line-height: 44px;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  border-color: rgb(23 23 23 / 0.15);
 }
 
-.archive-map .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
-  transform: scale(1.4);
+.archive-map .leaflet-control-attribution {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: color-mix(in srgb, var(--color-paper) 88%, transparent);
+  color: var(--color-muted);
+}
+
+.archive-map .leaflet-control-attribution a {
+  color: var(--color-secondary);
+}
+
+.archive-map .leaflet-marker-icon {
+  background: none;
+  border: none;
+}
+
+.archive-map .leaflet-marker-icon:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .archive-marker {
@@ -119,36 +163,45 @@ body {
   font-style: normal;
   font-size: 10px;
   letter-spacing: 0.1em;
+  white-space: nowrap;
   color: var(--color-ink);
   background: color-mix(in srgb, var(--color-paper) 88%, transparent);
   padding: 0 4px;
 }
 
-.archive-popup .maplibregl-popup-content {
+.archive-popup .leaflet-popup-content-wrapper {
   background: var(--color-paper);
   color: var(--color-ink);
   border: 1px solid rgb(23 23 23 / 0.15);
   border-radius: 0;
-  padding: 16px 18px;
+  box-shadow: none;
+}
+
+.archive-popup .leaflet-popup-content {
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  margin: 16px 18px;
   max-width: 240px;
 }
 
-.archive-popup .maplibregl-popup-content p {
+.archive-popup .leaflet-popup-content p {
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--color-muted);
+  margin: 0;
 }
 
-.archive-popup .maplibregl-popup-content h3 {
+.archive-popup .leaflet-popup-content h3 {
   font-family: var(--font-display);
+  font-weight: 500;
   font-size: 24px;
   line-height: 1.15;
-  margin-top: 6px;
+  margin: 6px 0 0;
 }
 
-.archive-popup .maplibregl-popup-content a {
+.archive-popup .leaflet-popup-content a {
   display: inline-block;
   margin-top: 10px;
   font-size: 12px;
@@ -158,8 +211,17 @@ body {
   color: var(--color-accent);
 }
 
-.archive-popup .maplibregl-popup-tip {
-  border-top-color: var(--color-paper);
+.archive-popup .leaflet-popup-tip {
+  background: var(--color-paper);
+  border: 1px solid rgb(23 23 23 / 0.15);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.archive-popup .leaflet-popup-close-button {
+  color: var(--color-muted);
+  font-size: 16px;
+  padding: 6px 6px 0 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

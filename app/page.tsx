@@ -12,12 +12,12 @@ export default async function Home() {
   const entries = await getAllEntries();
   const [featured, ...rest] = entries;
   const discoveries = rest.slice(0, 6);
-  const margins = entries.find((e) => e.category === "oddities" && e.slug !== "christmas-truce");
 
   return (
     <main className="flex-1">
-      {/* Hero */}
-      <section className="wrap grid items-end gap-10 py-16 sm:py-24 xl:grid-cols-2">
+      {/* Hero — fills the first viewport (100svh minus the 73px sticky header) so the
+          featured band starts below the fold. Content rides the vertical middle. */}
+      <section className="wrap grid min-h-[calc(100svh-73px)] items-center gap-10 py-16 sm:py-24 xl:grid-cols-2">
         <div>
           <p className="font-mono text-xs tracking-[0.25em] text-muted uppercase">
             Historical Archive
@@ -113,42 +113,17 @@ export default async function Home() {
               <span className="font-display text-2xl text-muted">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <div>
-                <h3 className="font-display text-2xl leading-snug sm:text-3xl">{entry.title}</h3>
+              <Link href={`/archive/${entry.slug}`} className="group block">
+                <h3 className="font-display text-2xl leading-snug transition-colors group-hover:text-accent sm:text-3xl">{entry.title}</h3>
                 <p className="mt-1 font-mono text-xs tracking-[0.15em] text-muted uppercase">
                   {displayYear(entry.startDate)} ·{" "}
                   {entry.country ?? entry.location ?? entry.category}
                 </p>
-              </div>
+              </Link>
             </li>
           ))}
         </ol>
       </section>
-
-      {/* From the margins — text-only oddity, no image by design */}
-      {margins && (
-        <section className="border-t border-ink/10">
-          <div className="wrap grid gap-6 py-16 sm:grid-cols-[1fr_2fr] sm:py-20">
-            <p className="font-mono text-xs tracking-[0.25em] text-muted uppercase">
-              From the margins
-              <span className="mt-2 block text-accent">Oddity · {displayYear(margins.startDate)}</span>
-            </p>
-            <div>
-              <Link href={`/archive/${margins.slug}`} className="group block">
-                <span className="font-display text-4xl leading-tight transition-colors group-hover:text-accent sm:text-5xl">
-                  {margins.title}
-                </span>
-                <span className="mt-4 block max-w-2xl leading-relaxed text-secondary">
-                  {margins.shortDescription}
-                </span>
-                <span aria-hidden="true" className="mt-4 block text-accent transition-transform duration-300 group-hover:translate-x-1">
-                  Read the record →
-                </span>
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Random */}
       <section id="random" className="scroll-mt-20 border-t border-ink/10 bg-ink text-paper">

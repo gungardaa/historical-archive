@@ -1,7 +1,6 @@
 # Map setup
 
-The `/map` page uses **MapLibre GL** (npm: `maplibre-gl`, the map library
-recommended in design.md) with **OpenStreetMap Standard** raster tiles:
+The `/map` page uses **Leaflet** (npm: `leaflet`) with **OpenStreetMap Standard** raster tiles:
 
 ```text
 https://tile.openstreetmap.org/{z}/{x}/{y}.png
@@ -10,7 +9,14 @@ https://tile.openstreetmap.org/{z}/{x}/{y}.png
 - No API key required. No `.env` variables needed.
 - Attribution to OpenStreetMap contributors is rendered on the map (license requirement — do not remove).
 - Tiles get the archival treatment via the `.archive-map` CSS filter in `app/globals.css`.
+- Leaflet needs no WebGL, so the map works wherever the site loads. A text fallback with a retry button covers tile failures.
 - ponytail: OSM tile policy discourages heavy use — keyed provider (MapTiler/Stadia) via env if traffic ever outgrows a museum site.
+
+## Behaviour
+
+- `minZoom: 2`, hard world fence at lng ±300 / lat ±90 (`maxBoundsViscosity: 1.0`, so every marker keeps its popup reachable; past ±180 is tile-less void by design), no wrapped world copies.
+- Markers are 44px touch targets with year labels. Click opens a paper popup with a link to the record.
+- Filters (search, categories, up to-year slider) rebuild markers in place.
 
 ## Swapping providers
 

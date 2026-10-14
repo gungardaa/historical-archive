@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, IBM_Plex_Mono, Inter } from "next/font/google";
-import Script from "next/script";
+import { cookies } from "next/headers";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import { SITE_URL } from "@/lib/site";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: "Historical Archive",
-    template: "%s — Historical Archive",
+    template: "%s - Historical Archive",
   },
   description: "Stories that shaped the world. A digital museum of wars, people, empires, and oddities.",
   icons: {
@@ -34,17 +34,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // ponytail: theme rendered, not patched — a pre-hydration DOM class on <html> loses to JSX
+  // reconciliation (observed: dark flash, then stripped, no other mutator in the codebase).
+  // Cookie is the single source of truth; anything but explicit "light" renders dark.
+  const theme = (await cookies()).get("archive-theme")?.value === "light" ? "" : "dark";
   return (
-      <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`} suppressHydrationWarning>
-      {/* ponytail: stored theme only, default light — full next-themes if per-route themes ever land. */}
-      <Script
-        id="archive-theme"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `(function(){try{if((localStorage.getItem("archive-theme")||"light")==="dark")document.documentElement.classList.add("dark")}catch(e){}})()`,
-        }}
-      />
+      <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased ${theme}`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col bg-paper text-ink">
         <a
           href="#main-content"

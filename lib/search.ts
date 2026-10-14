@@ -1,6 +1,6 @@
 import type { HistoricalEntry } from "@/types/archive";
 
-// ponytail: substring + weights, no stemming/fuzz — swap this file for a search index if entries pass ~200 or Supabase lands (same input/output contract: entries in, ranked out).
+// ponytail: substring + weights, no stemming/fuzz — swap this file for a search index if entries pass ~200 (same input/output contract: entries in, ranked out).
 export function normalize(s: string): string {
   return s
     .toLowerCase()

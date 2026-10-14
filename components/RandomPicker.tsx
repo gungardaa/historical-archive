@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import Button from "@/components/Button";
 import { formatDate } from "@/lib/formatDate";
 import type { HistoricalEntry } from "@/types/archive";
@@ -48,13 +49,12 @@ export default function RandomPicker({
   return (
     <div>
       {phase === "idle" && !autoStart && (
-        <button
-          type="button"
-          onClick={surprise}
+        <Link
+          href="/random"
           className="inline-flex items-center gap-2 bg-accent px-6 py-3 text-sm font-medium tracking-[0.12em] text-paper uppercase transition-colors hover:bg-paper hover:text-ink"
         >
           Surprise me ↗
-        </button>
+        </Link>
       )}
       {(phase === "searching" || (phase === "idle" && autoStart)) && (
         <p role="status" className="font-mono text-xs tracking-[0.25em] text-paper/70 uppercase">
