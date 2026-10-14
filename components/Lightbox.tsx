@@ -83,7 +83,7 @@ export default function Lightbox({
           role="dialog"
           aria-modal="true"
           aria-label={meta.title}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/90 p-6"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/90 p-4 sm:p-6"
           onClick={() => setOpen(false)}
         >
           <div className="w-full max-w-4xl" onClick={(ev) => ev.stopPropagation()}>

@@ -7,16 +7,6 @@ export type CategorySlug =
   | "technology"
   | "oddities";
 
-export interface ArchiveImage {
-  url: string;
-  alt?: string;
-  caption?: string;
-  credit?: string;
-  date?: string;
-  location?: string;
-  source?: string;
-}
-
 export interface TimelineEvent {
   date: string;
   title: string;
@@ -45,7 +35,6 @@ export interface HistoricalEntry {
   title: string;
   subtitle?: string;
   category: CategorySlug;
-  subcategory?: string;
   startDate: string;
   endDate?: string;
   location?: string;
@@ -64,7 +53,6 @@ export interface HistoricalEntry {
   legacy?: string;
   historicalSignificance?: string;
   heroImage: string;
-  gallery?: ArchiveImage[];
   timeline?: TimelineEvent[];
   keyFigures?: KeyFigure[];
   tags?: string[];

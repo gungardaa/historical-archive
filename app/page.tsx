@@ -17,12 +17,12 @@ export default async function Home() {
     <main className="flex-1">
       {/* Hero — fills the first viewport (100svh minus the 73px sticky header) so the
           featured band starts below the fold. Content rides the vertical middle. */}
-      <section className="wrap grid min-h-[calc(100svh-73px)] items-center gap-10 py-16 sm:py-24 xl:grid-cols-2">
+      <section className="wrap grid min-h-[calc(100svh-73px)] items-center gap-10 py-12 sm:py-24 xl:grid-cols-2">
         <div>
           <p className="font-mono text-xs tracking-[0.25em] text-muted uppercase">
             Historical Archive
           </p>
-          <h1 className="font-display mt-6 text-6xl leading-[1.02] sm:text-7xl">
+          <h1 className="font-display mt-6 text-5xl leading-[1.02] sm:text-7xl">
             Stories that shaped
             <br />
             the world.
@@ -30,7 +30,7 @@ export default async function Home() {
           <p className="mt-6 max-w-md leading-relaxed text-secondary">
             Explore wars, people, empires, inventions, strange events, and forgotten moments.
           </p>
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="mt-8 flex flex-wrap gap-4 max-sm:flex-col max-sm:items-stretch">
             <Button href="/explore">Explore the archive</Button>
             <Button href="/random" variant="secondary">
               Random entry ↗
@@ -88,14 +88,14 @@ export default async function Home() {
         <SectionHeading eyebrow="Cat. I–VI — Index" title="Explore by category" />
         <div className="mt-10 grid gap-px border border-ink/10 bg-ink/10 sm:grid-cols-2 lg:grid-cols-3">
           {CATEGORIES.map((cat) => (
-            <Link key={cat.slug} href={`/category/${cat.slug}`} className="group bg-ink p-8 text-paper">
+            <Link key={cat.slug} href={`/category/${cat.slug}`} className="group bg-ink p-6 text-paper sm:p-8">
               <div className="transition-transform duration-300 group-hover:scale-[1.02]">
                 <p className="font-mono text-xs text-paper/50">{cat.slug.toUpperCase()}</p>
                 <h3 className="font-display mt-3 text-3xl uppercase transition-transform duration-300 group-hover:translate-x-1">
                   {cat.label}
                 </h3>
                 <p className="mt-2 text-sm text-paper/70">{cat.note}</p>
-                <p aria-hidden="true" className="mt-6 text-accent opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100">
+                <p aria-hidden="true" className="mt-6 text-accent opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100 max-md:opacity-100">
                   → Browse
                 </p>
               </div>

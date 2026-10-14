@@ -56,7 +56,7 @@ export default async function EntryPage({ params }: { params: Promise<{ slug: st
       <section className="wrap pt-16 sm:pt-20">
         <p className="font-mono text-xs tracking-[0.25em] text-accent uppercase">{entry.category}</p>
         <p className="mt-2 font-mono text-sm text-muted">{formatDate(entry.startDate)}</p>
-        <h1 className="font-display mt-4 max-w-4xl text-5xl leading-[1.05] sm:text-7xl">
+        <h1 className="font-display mt-4 max-w-4xl text-4xl leading-[1.05] sm:text-7xl">
           {entry.title}
         </h1>
         {entry.subtitle && (
@@ -74,7 +74,7 @@ export default async function EntryPage({ params }: { params: Promise<{ slug: st
               <p key={i}>{para}</p>
             ))}
           </div>
-          <figure>
+          <figure className="max-lg:order-first">
             <Lightbox
               src={entry.heroImage}
               alt={`${entry.title} — archival plate`}

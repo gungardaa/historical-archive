@@ -151,7 +151,9 @@ export default function ExploreClient({ entries }: { entries: HistoricalEntry[] 
   const shelfSlugs = new Set(shelf.map((e) => e.slug));
 
   return (
-    <div>
+    // ponytail: li floor (grid items default min-width:auto) is the root fix; clip guards
+    // unknown long tokens on old browsers without clip support on body. No-op on desktop.
+    <div className="overflow-x-clip [&_li]:min-w-0">
       <h1 className="sr-only">Explore the archive</h1>
       <SectionHeading eyebrow={`Catalogue — ${entries.length} records`} title="Explore the archive" />
 

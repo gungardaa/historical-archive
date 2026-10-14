@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import { CATEGORIES } from "@/lib/categories";
-import { displayYear } from "@/lib/displayYear";
+import { displayYear, displayYearNumber } from "@/lib/displayYear";
 import { formatDate } from "@/lib/formatDate";
 import { parseYear } from "@/lib/timeline";
 import type { HistoricalEntry } from "@/types/archive";
@@ -220,7 +220,7 @@ export default function ArchiveMap({ entries }: { entries: HistoricalEntry[] }) 
         </p>
       </aside>
 
-      <div className="relative min-h-[60vh] flex-1">
+      <div className="relative min-h-[70svh] flex-1 md:min-h-[60vh]">
         {mapState === "error" ? (
           <div role="alert" className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-paper-deep/40 p-8 text-center">
             <p className="font-display text-3xl uppercase">Map unavailable</p>
@@ -304,7 +304,7 @@ function FilterControls(props: {
       </div>
       <div>
         <label htmlFor={`map-year-${idSuffix}`} className="font-mono text-xs tracking-[0.2em] text-muted uppercase">
-          Up to year — {limit < 0 ? `${Math.abs(limit)} BC` : limit}
+          Up to year — {displayYearNumber(limit)}
         </label>
         <input
           id={`map-year-${idSuffix}`}
@@ -316,7 +316,7 @@ function FilterControls(props: {
           className="mt-3 w-full accent-accent"
         />
         <div className="flex justify-between font-mono text-xs text-muted">
-          <span>{min < 0 ? `${Math.abs(min)} BC` : min}</span>
+          <span>{displayYearNumber(min)}</span>
           <span>{max}</span>
         </div>
       </div>

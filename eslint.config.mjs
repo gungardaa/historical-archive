@@ -12,9 +12,6 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // ponytail: vendored maplibre worker — third-party bundle, never lint it.
-    "public/maplibre-worker.mjs",
-    "public/maplibre-worker.mjs.map",
   ]),
 ]);
 
