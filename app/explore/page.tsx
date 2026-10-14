@@ -10,7 +10,7 @@ export const metadata = {
 export default async function ExplorePage() {
   const entries = await getAllEntries();
   return (
-    <main className="wrap flex-1 py-16 sm:py-20">
+    <main className="wrap flex-1 py-10 sm:py-14">
       <Suspense
         fallback={
           <p className="font-mono text-xs tracking-[0.25em] text-muted uppercase">
