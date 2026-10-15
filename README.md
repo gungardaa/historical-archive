@@ -7,14 +7,17 @@ A digital museum of human history. It gathers wars and battles and people and em
 ## Routes
 
 | Route | Content |
-| `/` | Featured stories and category plates and a random picker |
-| `/explore` | Full text search and category filters and four sort orders |
-| `/archive/[slug]` | Overview and context and causes and key moments and key figures and timelines and consequences |
+|---|---|
+| `/` | Featured stories, category plates, and a random picker |
+| `/explore` | Full-text search, category filters, and four sort orders |
+| `/archive/[slug]` | Overview, context, causes, key moments, key figures, timelines, and consequences |
 | `/timeline` | Chronological rail with a scrub slider that jumps to the nearest year |
-| `/map` | World map with markers and popups and search and category and year filters |
+| `/map` | World map with markers and popups, search, category, and year filters |
 | `/category/[slug]` | Every record in one category |
 | `/random` | Deals every record exactly once before reshuffling |
 | `/about` | Method and sources |
+
+Every route ships its own metadata plus sitemap, robots, and Open Graph images.
 
 Every route ships its own metadata plus sitemap and robots plus Open Graph images.
 
